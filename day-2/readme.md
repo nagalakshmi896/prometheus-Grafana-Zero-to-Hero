@@ -123,6 +123,10 @@ kubectl get all -n monitoring
 - **Prometheus UI**:
 ```bash
 kubectl port-forward service/prometheus-operated -n monitoring 9090:9090
+ex: This binds to: 127.0.0.1
+(or)
+kubectl port-forward -n monitoring svc/monitoring-grafana 9999:80 --address 0.0.0.0
+ex: This binds to: 0.0.0.0
 ```
 
 **NOTE:** If you are using an EC2 Instance or Cloud VM, you need to pass `--address 0.0.0.0` to the above command. Then you can access the UI on <instance-ip:port>
@@ -130,12 +134,17 @@ kubectl port-forward service/prometheus-operated -n monitoring 9090:9090
 - **Grafana UI**: password is `prom-operator`
 ```bash
 kubectl port-forward service/monitoring-grafana -n monitoring 8080:80
-
-For Grafana, use the username `admin`. Do not use `prom-operator` as the password. Retrieve the password from the `monitoring-grafana` secret and `decode` it from Base64 before use.
+or
+kubectl port-forward service/monitoring-grafana -n monitoring 8080:80 --address 0.0.0.0
 ```
+
+Note: For Grafana, use the username `admin`. Do not use `prom-operator` as the password. Retrieve the password from the `monitoring-grafana` secret and `decode` it from Base64 before use.
+
 - **Alertmanager UI**:
 ```bash
 kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093
+or
+kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093 --address 0.0.0.0
 ```
 
 ### 🧼 Step 5: Clean UP
