@@ -94,6 +94,14 @@ or use the pre-built images
 kubectl create ns dev
 
 kubectl apply -k kubernetes-manifest/
+
+controlplane ~ ✖ k -n dev get svc
+NAME        TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+a-service   LoadBalancer   172.20.177.238   xxx.xxxlb.com     80:30806/TCP   6m46s
+b-service   ClusterIP      172.20.227.76    <none>        80/TCP         6m46s
+
+Note: IF no LB access , use port-forward
+kubectl -n dev port-forward svc/a-service 8081:80 --address 0.0.0.0 
 ```
 
 ## 4) Test all the endpoints
