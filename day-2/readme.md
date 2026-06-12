@@ -140,6 +140,13 @@ kubectl port-forward service/monitoring-grafana -n monitoring 8080:80 --address 
 
 Note: For Grafana, use the username `admin`. Do not use `prom-operator` as the password. Retrieve the password from the `monitoring-grafana` secret and `decode` it from Base64 before use.
 
+```
+controlplane ~ ➜  k -n monitoring get secrets monitoring-grafana -o yaml | grep -i admin-password
+  admin-password: ZHFBRXdwelNNaUZiOEdQYmlIOVBqU1dydm5DazdySWtMbHhpeHVCag==
+controlplane ~ ➜  echo "ZHFBRXdwelNNaUZiOEdQYmlIOVBqU1dydm5DazdySWtMbHhpeHVCag==" | base64 -d
+o/p: dqAEwpzSMiFb8GPbiH9PjSWrvnCk7rIkLlxixuBj
+```
+
 - **Alertmanager UI**:
 ```bash
 kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093
