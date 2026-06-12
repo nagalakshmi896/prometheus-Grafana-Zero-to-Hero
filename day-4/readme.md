@@ -118,7 +118,17 @@ kubectl -n dev port-forward svc/a-service 8081:80 --address 0.0.0.0
 ```bash
 ./test.sh <<LOAD_BALANCER_DNS_NAME>>
 ```
-
+or
+```
+curl http://localhost:8081/
+curl http://localhost:8081/healthy
+curl http://localhost:8081/serverError
+curl http://localhost:8081/notFound
+curl http://localhost:8081/logs
+curl http://localhost:8081/example
+curl http://localhost:8081/metrics
+curl http://localhost:8081/call-service-b
+```
 ## 5) Configure Alertmanager
 - Review the Alertmanager configuration files located in `day-4/alerts-alertmanager-servicemonitor-manifest` but below is the brief overview
     - Before configuring Alertmanager, we need credentials to send emails. For this project, we are using Gmail, but any SMTP provider like AWS SES can be used. so please grab the credentials for that.
