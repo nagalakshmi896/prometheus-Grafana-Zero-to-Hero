@@ -125,7 +125,7 @@ kubectl get all -n monitoring
 kubectl port-forward service/prometheus-operated -n monitoring 9090:9090
 ex: This binds to: 127.0.0.1
 (or)
-kubectl port-forward -n monitoring svc/monitoring-grafana 9999:9090 --address 0.0.0.0
+kubectl port-forward -n monitoring svc/prometheus-operated 9999:9090 --address 0.0.0.0
 ex: This binds to: 0.0.0.0
 ```
 
