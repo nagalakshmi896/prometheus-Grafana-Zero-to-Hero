@@ -161,4 +161,8 @@ kubectl apply -k alerts-alertmanager-servicemonitor-manifest/
 - To test the alerting system, manually crash the container more than 2 times to trigger an alert (email notification).
 - To crash the application container, hit the following endpoint
 - `<<LOAD_BALANCER_DNS_NAME>>/crash`
+- k -n dev get po
+NAME                                    READY   STATUS    RESTARTS      AGE
+service-a-deployment-6498bbbdd5-ch99c   0/1     Error     1 (41s ago)   39m
+service-b-deployment-5bccf695f-tsmzt    1/1     Running   0             39m
 - You should receive an email once the application container has restarted at least 3 times.
