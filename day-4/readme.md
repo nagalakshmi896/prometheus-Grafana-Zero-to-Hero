@@ -104,6 +104,10 @@ Note: IF no LB access , use port-forward
 kubectl -n dev port-forward svc/a-service 8081:80 --address 0.0.0.0 
 ```
 
+Access application metrics: node_js_xxx.xxxlb.com/metrics
+
+- 
+
 ## 4) Test all the endpoints
 - Open a browser and get the LoadBalancer DNS name & hit the DNS name with following routes to test the application:
     - `/`
@@ -129,6 +133,13 @@ curl http://localhost:8081/example
 curl http://localhost:8081/metrics
 curl http://localhost:8081/call-service-b
 ```
+- check `http_requests_total` query on prometheus , we will not see any ouput becase we are still yet add connection between application/metrics to prometheus
+```
+kubectl apply -k alerts-alertmanager-servicemonitor-manifest/ (install both alertmanager + serviceMonitor)
+or
+kubectl apply -f alerts-alertmanager-servicemonitor-manifest/serviceMonitor.yml
+```
+
 ## 5) Configure Alertmanager
 - Review the Alertmanager configuration files located in `day-4/alerts-alertmanager-servicemonitor-manifest` but below is the brief overview
     - Before configuring Alertmanager, we need credentials to send emails. For this project, we are using Gmail, but any SMTP provider like AWS SES can be used. so please grab the credentials for that.
