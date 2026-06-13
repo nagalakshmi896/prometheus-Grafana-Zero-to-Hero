@@ -21,7 +21,6 @@
 ![Project Architecture](images/architecture.gif)
 
 
-
 ## ⚙️ Setting Up Jaeger
 
 ### Step 1: Instrumenting Your Code
@@ -36,6 +35,39 @@
 - Query: Provides a UI to view traces.
 - Storage: Stores traces for later retrieval (often a database like *Elasticsearch*).
 
+### Nag Note:
+### Create Elastic search using day-5 readme.md
+https://github.com/nagalakshmi896/prometheus-Grafana-Zero-to-Hero/tree/main/day-5
+
+* Enable OIDC (if not already enabled)
+* Create IAM Role for Service Account
+* Retrieve IAM Role ARN
+* Deploy EBS CSI Driver
+* Create Namespace for Logging (in big compines different elastic search will use for for EFK and jaeger )
+```
+kubectl create namespace tracing
+```
+Note: you can install Elasticsearch in `trace namespace` instead logging namespace
+```
+Fluent Bit
+    ↓
+Elasticsearch-Logs
+
+Jaeger
+    ↓
+Elasticsearch-Traces
+```
+
+* Install Elasticsearch on K8s (update namespace and es release name)
+```
+helm repo add elastic https://helm.elastic.co
+
+helm install Elasticsearch-Traces \
+ --set replicas=1 \
+ --set volumeClaimTemplate.storageClassName=gp2 \
+ --set persistence.labels.enabled=true elastic/elasticsearch -n tracing
+```
+* Retrieve Elasticsearch Username & Password
 
 ### Step 3: Export Elasticsearch CA Certificate
 - This command retrieves the CA certificate from the Elasticsearch master certificate secret and decodes it, saving it to a ca-cert.pem file.
@@ -68,7 +100,7 @@ helm repo update
 ```
 
 ### Step 8: Install Jaeger with Custom Values
-- 👉 **Note**: Please update the `password` field and other related field in the `jaeger-values.yaml` file with the password retrieved earlier in day-4 at step 6: (i.e NJyO47UqeYBsoaEU)"
+- 👉 **Note**: Please update the `password` field and other related field in the `jaeger-values.yaml` file with the password retrieved earlier in day-5 at step 6: (i.e NJyO47UqeYBsoaEU)"
 -  Command installs Jaeger into the tracing namespace using a custom jaeger-values.yaml configuration file. Ensure the password is updated in the file before installation.
 ```bash
 helm install jaeger jaegertracing/jaeger -n tracing --values jaeger-values.yaml
