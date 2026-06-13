@@ -176,9 +176,11 @@ helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 
 
 ## install day-4 apps and check the logs
-
+```
 git clone https://github.com/nagalakshmi896/prometheus-Grafana-Zero-to-Hero/tree/main/day-4/kubernetes-manifest
 cd /prometheus-Grafana-Zero-to-Hero/tree/main/day-4/
+```
+```
 kubectl create ns dev
 kubectl apply -k kubernetes-manifest
 
@@ -187,10 +189,11 @@ kubectl logs pod_name_xxxx -n dev
 
 kubectl get pods -n logging
 kubectl logs fluentbit_podname_xxx -n logging (you can find application names in logs and it forwarded the logs to the elastic search) 
-
+```
+```
 load kibana http://LOAD_BALANCER_DNS_NAME:5601
 create data view --> Name: logs_xxx ---> index pattern select logstash from right pop up bar ---> save
-
+```
 ## 🧼 Clean Up
 ```bash
 
