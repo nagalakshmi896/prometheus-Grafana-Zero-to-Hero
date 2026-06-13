@@ -112,6 +112,58 @@ kubectl port-forward svc/jaeger-query 8080:80 -n tracing --address 0.0.0.0
 
 ```
 
+## install day-4 apps and check the logs
+```
+git clone https://github.com/nagalakshmi896/prometheus-Grafana-Zero-to-Hero/tree/main/day-4/kubernetes-manifest
+cd /prometheus-Grafana-Zero-to-Hero/tree/main/day-4/
+```
+```
+kubectl create ns dev
+kubectl apply -k kubernetes-manifest
+
+kubectl get pods -n dev
+kubectl logs pod_name_xxxx -n dev
+
+kubectl get pods -n logging
+kubectl logs fluentbit_podname_xxx -n logging (you can find application names in logs and it forwarded the logs to the elastic search) 
+```
+```
+
+
+- load jaeger UI http://LOAD_BALANCER_DNS_NAME:8080 (you don't see any name)
+- load app:
+```
+http://app-lb-url/
+http://app-lb-url/healthy
+```
+- load jaeger UI again after hit the /healthy
+http://LOAD_BALANCER_DNS_NAME:8080
+
+```
+In your code: service-a is the `OpenTelemetry Service Name`, not necessarily the Kubernetes Service name.
+
+resource: new Resource({
+  [SemanticResourceAttributes.SERVICE_NAME]: 'service-a',
+}),
+
+```
+## Viewing Traces
+
+Select: Service A
+Click: Find Traces
+Jaeger shows:
+```text
+Request Path
+Time Taken
+Spans
+```
+
+## Service-to-Service Trace
+http://app-lb-url/call-service-b
+- load jaeger UI again after hit the /healthy
+http://LOAD_BALANCER_DNS_NAME:8080
+Click: Find Traces
+
 ## 🧼 Clean Up
 ```bash
 
