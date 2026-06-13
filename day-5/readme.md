@@ -23,9 +23,61 @@
 # 🏠 Architecture
 ![Project Architecture](images/architecture.gif)
 
+### Verify OIDC
+
+```bash
+aws eks describe-cluster \
+  --name observability \
+  --query "cluster.identity.oidc.issuer" \
+  --output text
+```
+
+If you get something like:
+
+```text
+https://oidc.eks.us-east-1.amazonaws.com/id/XXXXXXXX
+```
+
+then OIDC is enabled.
+
+### Enable OIDC (if not already enabled)
+
+```bash
+eksctl utils associate-iam-oidc-provider \
+  --cluster observability \
+  --approve
+```
+
+### Without OIDC:
+
+```text
+Service Account --> Cannot Assume IAM Role --> EBS CSI Driver Fails --> PVC remains Pending --> Elasticsearch Pods may not start
 
 ## 📝 Step-by-Step Setup
+### Verify OIDC
 
+```bash
+aws eks describe-cluster \
+  --name observability \
+  --query "cluster.identity.oidc.issuer" \
+  --output text
+```
+
+If you get something like:
+
+```text
+https://oidc.eks.us-east-1.amazonaws.com/id/XXXXXXXX
+```
+
+then OIDC is enabled.
+
+### Enable OIDC (if not already enabled)
+
+```bash
+eksctl utils associate-iam-oidc-provider \
+  --cluster observability \
+  --approve
+```
 ### 1) Create IAM Role for Service Account
 ```bash
 eksctl create iamserviceaccount \
