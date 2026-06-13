@@ -108,6 +108,11 @@ eksctl create addon --cluster observability --name aws-ebs-csi-driver --version 
 - Above command deploys the AWS EBS CSI driver as an addon to your Kubernetes cluster.
 - It uses the previously created IAM service account role to allow the driver to manage EBS volumes securely.
 
+It installs the AWS EBS CSI Driver add-on, which creates:
+  * An `EBS CSI Controller Deployment` (for volume provisioning and management).
+  * An `EBS CSI Node DaemonSet` (one pod per node for mounting/unmounting EBS volumes).
+These pods run in the `kube-system` namespace and enable Kubernetes PVCs to dynamically provision AWS EBS volumes.
+
 ### 4) Create Namespace for Logging
 ```bash
 kubectl create namespace logging
