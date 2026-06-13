@@ -113,6 +113,15 @@ It installs the AWS EBS CSI Driver add-on, which creates:
   * An `EBS CSI Node DaemonSet` (one pod per node for mounting/unmounting EBS volumes).
 These pods run in the `kube-system` namespace and enable Kubernetes PVCs to dynamically provision AWS EBS volumes.
 
+#### Verify
+kubectl get pods -n kube-system | grep ebs
+
+You should see something similar:
+ebs-csi-controller-xxxxx-xxxxx    Running
+ebs-csi-controller-xxxxx-yyyyy    Running
+ebs-csi-node-abcde                Running
+ebs-csi-node-fghij                Running
+
 ### 4) Create Namespace for Logging
 ```bash
 kubectl create namespace logging
@@ -156,6 +165,7 @@ helm install kibana --set service.type=LoadBalancer elastic/kibana -n logging
 helm repo add fluent https://fluent.github.io/helm-charts
 helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 ```
+- kubectl get pods -n logging
 
 ## ✅ Conclusion
 - We have successfully installed the EFK stack in our Kubernetes cluster, which includes Elasticsearch for storing logs, Fluentbit for collecting and forwarding logs, and Kibana for visualizing logs.
@@ -165,6 +175,18 @@ helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 - Once logged in, create a new data view in Kibana and explore the logs collected from your Kubernetes cluster.
 
 
+## install day-4 apps and check the logs
+
+git clone https://github.com/nagalakshmi896/prometheus-Grafana-Zero-to-Hero/tree/main/day-4/kubernetes-manifest
+cd /prometheus-Grafana-Zero-to-Hero/tree/main/day-4/
+kubectl create ns dev
+kubectl apply -k kubernetes-manifest
+
+kubectl get pods -n dev
+kubectl logs pod_name_xxxx -n dev
+
+kubectl get pods -n logging
+kubectl logs fluentbit_podname_xxx -n logging (you can find application names in logs and it forwarded the logs to the elastic search) 
 
 ## 🧼 Clean Up
 ```bash
