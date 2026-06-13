@@ -44,6 +44,7 @@ eksctl create iamserviceaccount \
 ### 2) Retrieve IAM Role ARN
 ```bash
 ARN=$(aws iam get-role --role-name AmazonEKS_EBS_CSI_DriverRole --query 'Role.Arn' --output text)
+cat $ARN
 ```
 - Command retrieves the ARN of the IAM role created for the EBS CSI controller service account.
 
