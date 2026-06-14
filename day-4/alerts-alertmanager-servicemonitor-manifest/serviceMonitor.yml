@@ -3,15 +3,15 @@ kind: ServiceMonitor
 metadata:
   labels:
     app: a-service-service-monitor
-    release: monitoring
+    release: monitoring   # (Must match Prometheus serviceMonitorSelector label) Usually this label must match what your Prometheus Operator is configured to watch.
   name: a-service-service-monitor
   namespace: monitoring
 spec:
   jobLabel: job
   endpoints:
     - interval: 2s
-      port: a-service-port
-      path: /metrics
+      port: a-service-port   # Named port from Kubernetes Service
+      path: /metrics   # Endpoint exposed by the application for Prometheus metrics (Prometheus client libraries or OpenTelemetry SDK + Prometheus exporter)
   selector:
     matchLabels:
       app: a-service
