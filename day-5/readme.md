@@ -159,6 +159,16 @@ helm install kibana --set service.type=LoadBalancer elastic/kibana -n logging
 - Kibana provides a user-friendly interface for exploring and visualizing data stored in Elasticsearch.
 - It is exposed as a LoadBalancer service, making it accessible from outside the cluster.
 
+```
+If asked:
+
+How does Kibana know where Elasticsearch is?
+
+You can answer:
+
+Kibana uses the Elasticsearch service DNS name configured in kibana.yml. In Kubernetes, the service elasticsearch-master is automatically resolvable through cluster DNS. The Kibana Helm chart configures the Elasticsearch endpoint and creates the required authentication token during installation. Kibana then communicates with Elasticsearch through the ClusterIP service within the cluster.
+```
+
 ### 8) Install Fluentbit with Custom Values/Configurations
 - 👉 **Note**: Please update the `HTTP_Passwd` field in the `fluentbit-values.yml` file with the password retrieved earlier in step 6: (i.e NJyO47UqeYBsoaEU)"
 ```bash
