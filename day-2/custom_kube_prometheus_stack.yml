@@ -1,3 +1,14 @@
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
 alertmanager:
   alertmanagerSpec:
     # Selects Alertmanager configuration based on these labels. Ensure that the Alertmanager configuration has matching labels.
@@ -17,3 +28,12 @@ alertmanager:
     # ✅ Solves error: Get rid of namespace matchers when creating AlertManagerConfig (GitHub issue)
     alertmanagerConfigMatcherStrategy:
       type: None
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
