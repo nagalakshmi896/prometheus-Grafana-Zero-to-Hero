@@ -170,12 +170,13 @@ Kibana uses the Elasticsearch service DNS name configured in kibana.yml. In Kube
 ```
 
 ### 8) Install Fluentbit with Custom Values/Configurations
-- 👉 **Note**: Please update the `HTTP_Passwd` field in the `fluentbit-values.yml` file with the password retrieved earlier in step 6: (i.e NJyO47UqeYBsoaEU)"
+- 👉 **Note**: Please update the `HTTP_Passwd` (update password at 2 places in output sections) field in the `fluentbit-values.yml` file with the password retrieved earlier in step 6: (i.e NJyO47UqeYBsoaEU)"
 ```bash
 helm repo add fluent https://fluent.github.io/helm-charts
 helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 ```
 - kubectl get pods -n logging
+- kubectl get cm fluent-bit -n logging -o yaml | grep HTTP_Passwd
 
 ## ✅ Conclusion
 - We have successfully installed the EFK stack in our Kubernetes cluster, which includes Elasticsearch for storing logs, Fluentbit for collecting and forwarding logs, and Kibana for visualizing logs.
