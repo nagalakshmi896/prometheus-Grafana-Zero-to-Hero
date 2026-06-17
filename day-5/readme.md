@@ -134,7 +134,7 @@ helm repo add elastic https://helm.elastic.co
 
 helm install elasticsearch \
  --set replicas=1 \
- --set volumeClaimTemplate.storageClassName=gp2 \
+ --set volumeClaimTemplate.storageClassName=gp3 \
  --set persistence.labels.enabled=true elastic/elasticsearch -n logging
 ```
 - Installs Elasticsearch in the `logging` namespace.
