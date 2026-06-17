@@ -108,6 +108,75 @@ helm repo update
 ```bash
 kubectl create ns monitoring
 ```
+
+### Nag Note:
+---
+
+eksctl create iamserviceaccount \
+    --name ebs-csi-controller-sa \
+    --namespace kube-system \
+    --cluster my-eks-cluster \
+    --role-name AmazonEKS_EBS_CSI_DriverRole \
+    --role-only \
+    --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+    --approve
+
+eksctl create addon --cluster my-eks-cluster --name aws-ebs-csi-driver --version latest \
+    --service-account-role-arn $ARN --force
+
+> eksctl get addon --cluster my-eks-cluster
+
+
+vi prometheus_storageclass.yaml
+
+```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+```
+
+kubectl apply -f prometheus_storageclass.yaml
+kubectl get sc
+
+
+helm upgrade monitoring prometheus-community/kube-prometheus-stack \
+  -n monitoring \
+  -f custom_kube_prometheus_stack.yml
+
+kubectl get pvc -n monitoring -w
+kubectl get pv -n monitoring
+
+```
+nagalakshmimanda@Naga-mac day-2 % kubectl get pvc -n monitoring -w
+NAME                                                                                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+alertmanager-monitoring-kube-prometheus-alertmanager-db-alertmanager-monitoring-kube-prometheus-alertmanager-0   Bound    pvc-bd788216-a80b-41fd-bba8-6427c6fcca5f   5Gi        RWO            gp3            <unset>                 2m26s
+alertmanager-monitoring-kube-prometheus-alertmanager-db-alertmanager-monitoring-kube-prometheus-alertmanager-1   Bound    pvc-b8284d15-13cd-4337-b370-8f5b72e47d9d   5Gi        RWO            gp3            <unset>                 2m26s
+prometheus-monitoring-kube-prometheus-prometheus-db-prometheus-monitoring-kube-prometheus-prometheus-0           Bound    pvc-e14e9de5-ef4b-4a06-980f-ed6e61575754   20Gi       RWO            gp3            <unset>                 2m35s
+nagalakshmimanda@Naga-mac day-2 %
+```
+20 GiB  -> Prometheus
+5 GiB   -> Alertmanager-0
+5 GiB   -> Alertmanager-1
+
+
+helm history monitoring -n monitoring
+helm rollback monitoring 2 -n monitoring
+helm get values monitoring -n monitoring
+helm get manifest monitoring -n monitoring
+helm status monitoring -n monitoring
+
+
+Note:
+I configured Prometheus and Alertmanager with EBS-backed persistent storage using the AWS EBS CSI Driver and a gp3 StorageClass. Because the StorageClass uses WaitForFirstConsumer, the EBS volumes were created only after the pods were scheduled. Prometheus received a 20 GiB EBS volume for TSDB storage, and each Alertmanager replica received its own 5 GiB EBS volume to persist alert state and HA cluster metadata. This ensures monitoring data survives pod restarts and node failures.
+
+----
+
 ```bash
 cd day-2
 
