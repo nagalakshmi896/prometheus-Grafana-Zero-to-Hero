@@ -110,8 +110,8 @@ kubectl create ns monitoring
 ```
 
 ### Nag Note:
----
 
+```
 eksctl create iamserviceaccount \
     --name ebs-csi-controller-sa \
     --namespace kube-system \
@@ -124,8 +124,8 @@ eksctl create iamserviceaccount \
 eksctl create addon --cluster my-eks-cluster --name aws-ebs-csi-driver --version latest \
     --service-account-role-arn $ARN --force
 
-> eksctl get addon --cluster my-eks-cluster
-
+eksctl get addon --cluster my-eks-cluster
+```
 
 vi prometheus_storageclass.yaml
 
@@ -140,14 +140,22 @@ parameters:
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 ```
-
+```
 kubectl apply -f prometheus_storageclass.yaml
 kubectl get sc
+```
+```bash
+cd day-2
 
+helm install monitoring prometheus-community/kube-prometheus-stack \
+-n monitoring \
+-f ./custom_kube_prometheus_stack.yml
 
+or
 helm upgrade monitoring prometheus-community/kube-prometheus-stack \
   -n monitoring \
   -f custom_kube_prometheus_stack.yml
+```
 
 kubectl get pvc -n monitoring -w
 kubectl get pv -n monitoring
@@ -164,13 +172,13 @@ nagalakshmimanda@Naga-mac day-2 %
 5 GiB   -> Alertmanager-0
 5 GiB   -> Alertmanager-1
 
-
+```
 helm history monitoring -n monitoring
 helm rollback monitoring 2 -n monitoring
 helm get values monitoring -n monitoring
 helm get manifest monitoring -n monitoring
 helm status monitoring -n monitoring
-
+```
 
 Note:
 I configured Prometheus and Alertmanager with EBS-backed persistent storage using the AWS EBS CSI Driver and a gp3 StorageClass. Because the StorageClass uses WaitForFirstConsumer, the EBS volumes were created only after the pods were scheduled. Prometheus received a 20 GiB EBS volume for TSDB storage, and each Alertmanager replica received its own 5 GiB EBS volume to persist alert state and HA cluster metadata. This ensures monitoring data survives pod restarts and node failures.
